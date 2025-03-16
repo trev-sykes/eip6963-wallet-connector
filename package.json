@@ -2,7 +2,7 @@
   "name": "wallet-connect",
   "version": "1.0.0",
   "description": "A custom React hook and component for connecting to Ethereum wallets using the EIP-6963 standard.",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
