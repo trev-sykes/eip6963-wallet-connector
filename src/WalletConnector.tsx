@@ -1,9 +1,21 @@
 import { useWalletConnect } from "./useEIP6963WalletConnect";
 import { CSSProperties, useState } from "react";
 
-export function WalletConnector() {
+export function QuickWallet() {
     const [isHovered, setIsHovered] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
+
+    // Move this up so connecting and error are available for styles
+    const {
+        availableWallets,
+        activeWallet,
+        signerAddress,
+        walletIconURL,
+        connectWallet,
+        disconnectWallet,
+        connecting,
+        error,
+    } = useWalletConnect();
 
     // Enhanced Styles with animations
     const imageStyleProps: CSSProperties = {
@@ -61,6 +73,8 @@ export function WalletConnector() {
         cursor: "pointer",
         transition: "all 0.3s ease",
         boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.1)",
+        opacity: connecting ? 0.5 : 1, // Now safe to use
+        pointerEvents: connecting ? "none" : "auto", // Now safe to use
     };
 
     const addressStyle: CSSProperties = {
@@ -84,12 +98,15 @@ export function WalletConnector() {
         textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
     };
 
-    const { availableWallets, activeWallet, signerAddress, walletIconURL, connectWallet, disconnectWallet } =
-        useWalletConnect();
+    const errorStyle: CSSProperties = {
+        margin: "10px 0",
+        fontSize: "14px",
+        color: "#d32f2f",
+        fontStyle: "italic",
+    };
 
     const handleConnect = (walletName: string) => {
-        connectWallet(walletName);
-        setIsConnected(true);
+        connectWallet(walletName).then(() => setIsConnected(true));
     };
 
     const handleDisconnect = () => {
@@ -98,7 +115,6 @@ export function WalletConnector() {
         setIsHovered(false);
     };
 
-    // Combine base and hover styles dynamically
     const getButtonStyle = (): CSSProperties => ({
         ...buttonStyle,
         ...(isHovered ? buttonHoverStyle : {}),
@@ -106,7 +122,9 @@ export function WalletConnector() {
 
     return (
         <div style={containerStyle}>
-            <h3 style={headerStyle}>{isConnected ? "Connected" : "Connect Wallet"}</h3>
+            <h3 style={headerStyle}>
+                {connecting ? "Connecting..." : isConnected ? "Connected" : "Connect Wallet"}
+            </h3>
 
             {signerAddress ? (
                 <div style={{ animation: "fadeIn 0.5s ease-in-out" }}>
@@ -139,25 +157,29 @@ export function WalletConnector() {
                         <p style={{ fontSize: "16px", color: "#888", fontStyle: "italic" }}>
                             No wallets detected 😕
                         </p>
+                    ) : connecting ? (
+                        <p style={{ fontSize: "16px", color: "#555" }}>Please approve in your wallet...</p>
                     ) : (
-                        <select
-                            onChange={(e) => handleConnect(e.target.value)}
-                            style={selectStyle}
-                            onFocus={(e) => (e.target.style.borderColor = "#4CAF50")}
-                            onBlur={(e) => (e.target.style.borderColor = "#ddd")}
-                        >
-                            <option value="">Choose Your Wallet</option>
-                            {availableWallets.map((wallet) => (
-                                <option key={wallet.info.name} value={wallet.info.name}>
-                                    {wallet.info.name}
-                                </option>
-                            ))}
-                        </select>
+                        <>
+                            {error && <p style={errorStyle}>{error}</p>}
+                            <select
+                                onChange={(e) => handleConnect(e.target.value)}
+                                style={selectStyle}
+                                onFocus={(e) => (e.target.style.borderColor = "#4CAF50")}
+                                onBlur={(e) => (e.target.style.borderColor = "#ddd")}
+                            >
+                                <option value="">Choose Your Wallet</option>
+                                {availableWallets.map((wallet) => (
+                                    <option key={wallet.info.name} value={wallet.info.name}>
+                                        {wallet.info.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </>
                     )}
                 </div>
             )}
 
-            {/* Inline keyframes for animations */}
             <style>
                 {`
           @keyframes fadeIn {
