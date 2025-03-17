@@ -1,18 +1,20 @@
 {
-  "name": "wallet-connect",
+  "name": "quick-connect",
   "version": "1.0.0",
-  "description": "A custom React hook and component for connecting to Ethereum wallets using the EIP-6963 standard.",
-  "main": "index.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "A simple React wallet selector using EIP-6963",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build"
+  },
   "dependencies": {
-    "ethers": "^6.13.5",
-    "react": "^19.0.0"
+    "react": "^18.0.0",
+    "ethers": "^6.0.0"
   },
   "devDependencies": {
-    "@types/node": "^22.13.10",
-    "@types/react": "^19.0.10",
-    "typescript": "^5.8.2"
+    "typescript": "^5.0.0",
+    "@types/react": "^18.0.0"
   }
 }

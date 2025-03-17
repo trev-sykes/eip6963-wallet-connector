@@ -1,24 +1,16 @@
 {
   "compilerOptions": {
-    /* Projects */
-    "target": "es2016", 
-    "module": "commonjs",  
-    "jsx": "react-jsx",  /* Assuming you're using React with the new JSX Transform */
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true, 
-    "strict": true,  
-
-    /* Emit */
-    "sourceMap": true,  /* To generate source maps for debugging */
-    
-    /* Type Checking */
-    "noImplicitAny": true, /* You may want to enable this to avoid implicit 'any' types */
-    "noUnusedLocals": true, /* Report unused locals to help with cleaner code */
-    "noUnusedParameters": true, /* Report unused parameters in functions */
-
-    /* Additional Debugging Options */
-    "declaration": true, /* Generate TypeScript declaration files (.d.ts) */
-    "declarationMap": true, /* Generate declaration map files for better debugging */
-  }
+    "outDir": "dist",
+    "module": "ESNext",
+    "target": "ES6",
+    "declaration": true,
+    "moduleResolution": "Node",
+    "jsx": "react-jsx",
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "src"
+  ]
 }
