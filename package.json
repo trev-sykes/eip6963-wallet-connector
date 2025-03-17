@@ -1,5 +1,5 @@
 {
-  "name": "quick-connect",
+  "name": "@trev0sykes/quick-connect",
   "version": "1.0.0",
   "description": "A simple React wallet selector using EIP-6963",
   "main": "dist/index.js",
