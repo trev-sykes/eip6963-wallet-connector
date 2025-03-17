@@ -1,7 +1,7 @@
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import { useWalletConnect } from "./useEIP6963WalletConnect";
 import { useState } from "react";
-export function QuickWallet() {
+export function WalletConnector() {
     const [isHovered, setIsHovered] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
     // Move this up so connecting and error are available for styles

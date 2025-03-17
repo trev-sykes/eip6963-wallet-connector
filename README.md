@@ -24,3 +24,5 @@ const useMyWalletStore = create((set) => {
   return { ...wallet, customStuff: "foo" };
 });
 ````
+
+[Click here to watch the demo video](./assets/your_video.mp4)
