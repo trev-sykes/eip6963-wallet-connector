@@ -1,1 +1,1 @@
-export declare function WalletConnector(): import("react/jsx-runtime").JSX.Element;
+export declare function QuickWallet(): import("react/jsx-runtime").JSX.Element;

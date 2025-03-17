@@ -16,12 +16,11 @@ export function useWalletConnect() {
     const [signerAddress, setSignerAddress] = useState("");
     const [activeWallet, setActiveWallet] = useState("");
     const [walletIconURL, setWalletIconURL] = useState("");
-    // Detect wallets using EIP-6963
+    const [connecting, setConnecting] = useState(false); // New state
+    const [error, setError] = useState(null); // New state for errors
     useEffect(() => {
         const wallets = [];
-        const handler = (event) => {
-            wallets.push(event.detail);
-        };
+        const handler = (event) => wallets.push(event.detail);
         window.addEventListener("eip6963:announceProvider", handler);
         window.dispatchEvent(new Event("eip6963:requestProvider"));
         setTimeout(() => {
@@ -29,38 +28,46 @@ export function useWalletConnect() {
             setAvailableWallets(wallets);
         }, 2000);
     }, []);
-    // Set the active wallet and create a signer
     const connectWallet = (walletName) => __awaiter(this, void 0, void 0, function* () {
-        const walletInfo = availableWallets.find((w) => w.info.name === walletName);
-        if (!walletInfo) {
-            console.error("Selected wallet not found:", walletName);
-            return;
+        setConnecting(true); // Start connecting state
+        setError(null); // Clear previous errors
+        try {
+            const walletInfo = availableWallets.find((w) => w.info.name === walletName);
+            if (!walletInfo) {
+                throw new Error(`Wallet "${walletName}" not found`);
+            }
+            const provider = walletInfo.provider;
+            yield provider.request({ method: "eth_requestAccounts" }); // This can be rejected
+            const ethersProvider = new ethers.BrowserProvider(provider);
+            const signer = yield ethersProvider.getSigner();
+            const signerAddress = yield signer.getAddress();
+            const walletIconURL = walletInfo.info.icon;
+            setProvider(ethersProvider);
+            setSigner(signer);
+            setSignerAddress(signerAddress);
+            setActiveWallet(walletName);
+            setWalletIconURL(walletIconURL);
+            provider.on("accountsChanged", () => __awaiter(this, void 0, void 0, function* () {
+                const newSigner = yield ethersProvider.getSigner();
+                const newSignerAddress = yield newSigner.getAddress();
+                setSigner(newSigner);
+                setSignerAddress(newSignerAddress);
+            }));
         }
-        const provider = walletInfo.provider;
-        yield provider.request({ method: "eth_requestAccounts" });
-        const ethersProvider = new ethers.BrowserProvider(provider);
-        const signer = yield ethersProvider.getSigner();
-        const signerAddress = yield signer.getAddress();
-        const walletIconURL = walletInfo.info.icon;
-        setProvider(ethersProvider);
-        setSigner(signer);
-        setSignerAddress(signerAddress);
-        setActiveWallet(walletName);
-        setWalletIconURL(walletIconURL);
-        // Listen for account changes
-        provider.on("accountsChanged", () => __awaiter(this, void 0, void 0, function* () {
-            const newSigner = yield ethersProvider.getSigner();
-            const newSignerAddress = yield newSigner.getAddress();
-            setSigner(newSigner);
-            setSignerAddress(newSignerAddress);
-        }));
+        catch (err) {
+            setError(err instanceof Error ? err.message : "Failed to connect wallet");
+        }
+        finally {
+            setConnecting(false); // End connecting state, success or fail
+        }
     });
-    // Clear wallet state
     const disconnectWallet = () => {
         setProvider(null);
         setSigner(null);
         setSignerAddress("");
         setActiveWallet("");
+        setWalletIconURL("");
+        setError(null); // Clear errors on disconnect
     };
     return {
         availableWallets,
@@ -70,5 +77,7 @@ export function useWalletConnect() {
         walletIconURL,
         connectWallet,
         disconnectWallet,
+        connecting, // Expose connecting state
+        error, // Expose error state
     };
 }

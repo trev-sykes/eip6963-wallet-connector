@@ -1,9 +1,11 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import { useWalletConnect } from "./useEIP6963WalletConnect";
 import { useState } from "react";
-export function WalletConnector() {
+export function QuickWallet() {
     const [isHovered, setIsHovered] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
+    // Move this up so connecting and error are available for styles
+    const { availableWallets, activeWallet, signerAddress, walletIconURL, connectWallet, disconnectWallet, connecting, error, } = useWalletConnect();
     // Enhanced Styles with animations
     const imageStyleProps = {
         width: "40px",
@@ -56,6 +58,8 @@ export function WalletConnector() {
         cursor: "pointer",
         transition: "all 0.3s ease",
         boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.1)",
+        opacity: connecting ? 0.5 : 1, // Now safe to use
+        pointerEvents: connecting ? "none" : "auto", // Now safe to use
     };
     const addressStyle = {
         margin: "10px 0",
@@ -76,24 +80,27 @@ export function WalletConnector() {
         color: "#2e7d32",
         textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
     };
-    const { availableWallets, activeWallet, signerAddress, walletIconURL, connectWallet, disconnectWallet } = useWalletConnect();
+    const errorStyle = {
+        margin: "10px 0",
+        fontSize: "14px",
+        color: "#d32f2f",
+        fontStyle: "italic",
+    };
     const handleConnect = (walletName) => {
-        connectWallet(walletName);
-        setIsConnected(true);
+        connectWallet(walletName).then(() => setIsConnected(true));
     };
     const handleDisconnect = () => {
         disconnectWallet();
         setIsConnected(false);
         setIsHovered(false);
     };
-    // Combine base and hover styles dynamically
     const getButtonStyle = () => (Object.assign(Object.assign({}, buttonStyle), (isHovered ? buttonHoverStyle : {})));
-    return (_jsxs("div", { style: containerStyle, children: [_jsx("h3", { style: headerStyle, children: isConnected ? "Connected" : "Connect Wallet" }), signerAddress ? (_jsxs("div", { style: { animation: "fadeIn 0.5s ease-in-out" }, children: [_jsxs("div", { style: {
+    return (_jsxs("div", { style: containerStyle, children: [_jsx("h3", { style: headerStyle, children: connecting ? "Connecting..." : isConnected ? "Connected" : "Connect Wallet" }), signerAddress ? (_jsxs("div", { style: { animation: "fadeIn 0.5s ease-in-out" }, children: [_jsxs("div", { style: {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                             marginBottom: "12px",
-                        }, children: [_jsx("img", { src: walletIconURL, alt: "wallet icon", style: imageStyleProps }), _jsx("p", { style: { margin: 0, fontWeight: "600", fontSize: "16px", color: "#444" }, children: activeWallet })] }), _jsxs("p", { style: addressStyle, children: ["Address: ", signerAddress] }), _jsx("button", { onClick: handleDisconnect, style: getButtonStyle(), onMouseOver: () => setIsHovered(true), onMouseOut: () => setIsHovered(false), children: "Disconnect" })] })) : (_jsx("div", { style: { animation: "slideUp 0.5s ease-out" }, children: availableWallets.length === 0 ? (_jsx("p", { style: { fontSize: "16px", color: "#888", fontStyle: "italic" }, children: "No wallets detected \uD83D\uDE15" })) : (_jsxs("select", { onChange: (e) => handleConnect(e.target.value), style: selectStyle, onFocus: (e) => (e.target.style.borderColor = "#4CAF50"), onBlur: (e) => (e.target.style.borderColor = "#ddd"), children: [_jsx("option", { value: "", children: "Choose Your Wallet" }), availableWallets.map((wallet) => (_jsx("option", { value: wallet.info.name, children: wallet.info.name }, wallet.info.name)))] })) })), _jsx("style", { children: `
+                        }, children: [_jsx("img", { src: walletIconURL, alt: "wallet icon", style: imageStyleProps }), _jsx("p", { style: { margin: 0, fontWeight: "600", fontSize: "16px", color: "#444" }, children: activeWallet })] }), _jsxs("p", { style: addressStyle, children: ["Address: ", signerAddress] }), _jsx("button", { onClick: handleDisconnect, style: getButtonStyle(), onMouseOver: () => setIsHovered(true), onMouseOut: () => setIsHovered(false), children: "Disconnect" })] })) : (_jsx("div", { style: { animation: "slideUp 0.5s ease-out" }, children: availableWallets.length === 0 ? (_jsx("p", { style: { fontSize: "16px", color: "#888", fontStyle: "italic" }, children: "No wallets detected \uD83D\uDE15" })) : connecting ? (_jsx("p", { style: { fontSize: "16px", color: "#555" }, children: "Please approve in your wallet..." })) : (_jsxs(_Fragment, { children: [error && _jsx("p", { style: errorStyle, children: error }), _jsxs("select", { onChange: (e) => handleConnect(e.target.value), style: selectStyle, onFocus: (e) => (e.target.style.borderColor = "#4CAF50"), onBlur: (e) => (e.target.style.borderColor = "#ddd"), children: [_jsx("option", { value: "", children: "Choose Your Wallet" }), availableWallets.map((wallet) => (_jsx("option", { value: wallet.info.name, children: wallet.info.name }, wallet.info.name)))] })] })) })), _jsx("style", { children: `
           @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }

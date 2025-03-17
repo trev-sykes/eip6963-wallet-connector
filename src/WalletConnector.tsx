@@ -1,7 +1,7 @@
 import { useWalletConnect } from "./useEIP6963WalletConnect";
 import { CSSProperties, useState } from "react";
 
-export function QuickWallet() {
+export function WalletConnector() {
     const [isHovered, setIsHovered] = useState(false);
     const [isConnected, setIsConnected] = useState(false);
 

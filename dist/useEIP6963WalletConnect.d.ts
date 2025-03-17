@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 interface WalletInfo {
     info: {
         name: string;
@@ -8,10 +9,12 @@ interface WalletInfo {
 export declare function useWalletConnect(): {
     availableWallets: WalletInfo[];
     activeWallet: string;
-    signer: any;
+    signer: ethers.Signer | null;
     signerAddress: string;
     walletIconURL: string;
     connectWallet: (walletName: string) => Promise<void>;
     disconnectWallet: () => void;
+    connecting: boolean;
+    error: string | null;
 };
 export {};
