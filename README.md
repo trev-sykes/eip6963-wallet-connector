@@ -1,10 +1,11 @@
-# use-wallet-connect
+# 🚀 Quick Connect - A Simple Wallet Selector for React  
 
-A custom React hook and component for connecting to Ethereum wallets using the EIP-6963 standard.
+Easily integrate **EIP-6963** wallet detection and connection into your React app.  
 
-## Installation
+---
 
-Install via npm or yarn:
+## 📦 Installation  
 
-```bash
-npm install use-wallet-connect
+Install Quick Connect via npm or yarn:  
+```sh
+npm install @trev0sykes/quick-connect
