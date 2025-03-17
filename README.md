@@ -25,4 +25,4 @@ const useMyWalletStore = create((set) => {
 });
 ````
 
-[Click here to watch the demo video](./assets/your_video.mp4)
+[Click here to watch the demo video](./assets/wallet-connect-example.mp4)
