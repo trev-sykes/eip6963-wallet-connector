@@ -15,14 +15,5 @@ To install **@trev0sykes/quick-connect**, run the following command:
 
 ```bash
 npm install @trev0sykes/quick-connect
-
-
-example of how you can use it in a state management 
-````
-const useMyWalletStore = create((set) => {
-  const wallet = useWalletConnect();
-  return { ...wallet, customStuff: "foo" };
-});
-````
-
+```
 [Click here to watch the demo video](./assets/wallet-connect-example.mp4)
